@@ -38,10 +38,8 @@
   <div>
     <label for="newCommentYTC">Create New Comment</label>
     <input bind:value={comment} id="newCommentYTC" style="width: 300px" />
-    {#if comment.length > 0}
-      <button on:click={() => comment = ''}>Cancel</button>
-      <button id="addCommentYTC" on:click={add_comment} >Comment</button>
-    {/if}
+    <button on:click={() => comment = ''}>Cancel</button>
+    <button id="addCommentYTC" on:click={add_comment} >Comment</button>
   </div>
 </main>
 

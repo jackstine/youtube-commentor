@@ -31,6 +31,7 @@
   let topCommentId = comments[0].id
 
   const handle_new_comment = function (e) {
+    let new_comment = e.detail
     // TODO POST to API
     comments = [new_comment, ...comments]
 //      topComment.before(generateCommentHTML(commentObj))
