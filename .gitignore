@@ -1,0 +1,12 @@
+/node_modules/
+/public/build/
+
+.DS_Store
+/public
+
+application.txt
+info.txt
+
+package-lock.json
+
+

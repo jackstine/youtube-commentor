@@ -1,0 +1,103 @@
+<script>
+import NewComment from "./NewComment.svelte";
+// import {createEventDispatcher} from 'svelte'
+// const dispatch = createEventDispatcher();
+
+let show_new_comment_section = false
+let show_reply_comments = false
+let current_time = new Date().getTime()
+
+const LIKES ={
+  LIKE: 1,
+  DISLIKE:2,
+  NOTHING: 0
+}
+
+export let comment_obj;
+$: comment = comment_obj.comment;
+$: replies = [...comment_obj.replies];
+$: likes = comment_obj.comment.likes
+$: dislikes = comment_obj.comment.dislikes
+$: user_like = comment_obj.comment.user_like
+
+
+const on_show_reply_comments = function (comment_id) {
+  show_reply_comments = !show_reply_comments
+  // TODO call api to get the replies
+}
+
+const on_dislike = function () {
+  if (user_like === LIKES.LIKE) {
+    comment_obj.comment.likes--
+  }
+  if (user_like === LIKES.NOTHING || user_like === LIKES.LIKE) {
+    // TODO make call to api to store like
+    comment_obj.comment.dislikes++
+    comment_obj.comment.user_like = LIKES.DISLIKE
+  }
+}
+
+const on_like = function () {
+  if (user_like === LIKES.DISLIKE) {
+    comment_obj.comment.dislikes--
+  }
+  if (user_like === LIKES.NOTHING || user_like === LIKES.DISLIKE) {
+    // TODO make call to api to store like
+    comment_obj.comment.likes++
+    comment_obj.comment.user_like = LIKES.LIKE
+  }
+}
+
+const on_reply = function () {
+  show_new_comment_section = true
+}
+
+const on_new_reply= function (e) {
+  let reply = e.detail
+  console.log(reply)
+  // TODO create POST API for replies
+  console.log('THIS IS THE ON REPLY')
+  // reply.from_comment = comment.id
+  comment_obj.replies = [reply ,...comment_obj.replies]
+  show_reply_comments = true
+  show_new_comment_section = false
+}
+
+</script>
+<main>
+  <div id={comment.id} style="margin-bottom: 8px;">
+    <img style="float: left" class="style-scope yt-img-shadow"
+      id="img" alt="Liam Cloes" height="40" width="40"
+      src="https://yt3.ggpht.com/ytc/AKedOLTD3_5rjgNdFqLvGmIjfS44_uqdjjwdRYMkAPfWKA=s48-c-k-c0x00ffffff-no-rj"
+      />
+      <div>
+        <div style="display: inline-block;">
+          <div style="display: inline-block">{comment.user}</div>
+          <div style="display: inline-block; font-size: 0.8rem">{current_time - comment.time_stamp}</div>
+        </div>
+        <div>
+          {comment.comment}
+        </div>
+        <button on:click={on_like}>{likes} Like</button>
+        <button on:click={on_dislike}>{dislikes} Dislike</button>
+        <button on:click={on_reply}>Reply</button>
+        <div on:click={() => on_show_reply_comments(comment.id)} style="font-size: 1rem" >
+          View the replies to this comment
+        </div>
+        <div>
+          {#if show_new_comment_section}
+            <NewComment on:comment={on_new_reply} />
+          {/if}
+          {#if show_reply_comments}
+            {#each replies as c (c.comment.id)}
+              <svelte:self comment_obj={c}/>
+            {/each}
+          {/if}
+        </div>
+      </div>
+  </div>
+</main>
+<style>
+
+</style>
+
