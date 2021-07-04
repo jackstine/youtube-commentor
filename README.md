@@ -1,3 +1,25 @@
+#  Youtube Commentor
+to start the application
+```bash
+npm install
+
+npm install -g serve
+cd public
+serve
+```
+open anther terminal
+```bash
+npm dev
+```
+
+that is it
+
+
+
+
+
+
+
 *Looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
 
 ---
