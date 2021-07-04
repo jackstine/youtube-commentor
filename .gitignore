@@ -7,5 +7,10 @@ application.txt
 info.txt
 
 package-lock.json
+server/go.sum
+server/server
+server/todo
+server/test.db
+server/static/*
 
 

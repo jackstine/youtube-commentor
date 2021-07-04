@@ -16,6 +16,8 @@ that is it
 
 
 
+ohhh so it's a service that lets people share comments on videos that have them turned off?
+
 
 
 
