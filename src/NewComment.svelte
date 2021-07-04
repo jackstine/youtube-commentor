@@ -29,15 +29,33 @@
   }
   
 </script>
+
 <main>
+  <img alt="Liam Cloes" height="40" width="40"
+    src="https://yt3.ggpht.com/ytc/AKedOLTD3_5rjgNdFqLvGmIjfS44_uqdjjwdRYMkAPfWKA=s48-c-k-c0x00ffffff-no-rj"
+  />
+
   <div>
-    <img style="float: left" class="style-scope yt-img-shadow"
-      id="img" alt="Liam Cloes" height="40" width="40"
-      src="https://yt3.ggpht.com/ytc/AKedOLTD3_5rjgNdFqLvGmIjfS44_uqdjjwdRYMkAPfWKA=s48-c-k-c0x00ffffff-no-rj"
-      />
     <label for="newCommentYTC">Create New Comment</label>
     <input bind:value={comment} id="newCommentYTC" style="width: 300px" />
-    <button>Cancel</button>
-    <button id="addCommentYTC" on:click={add_comment} >Comment</button>
+    {#if comment.length > 0}
+      <button on:click={() => comment = ''}>Cancel</button>
+      <button id="addCommentYTC" on:click={add_comment} >Comment</button>
+    {/if}
   </div>
 </main>
+
+<style>
+  main {
+    display: grid;
+    grid-template-columns: min-content 1fr;
+    grid-template-areas:
+      'img comment';
+  }
+
+  img {
+    grid-area: img;
+    border-radius: 50%;
+    margin-right: 16px;
+  }
+</style>
