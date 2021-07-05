@@ -10,7 +10,7 @@ package-lock.json
 server/go.sum
 server/server
 server/todo
-server/test.db
+test.db
 server/static/*
-
+youtube-commentor
 
