@@ -28,6 +28,12 @@ func (repo *LikeRepo) SelectByUserIdAndCommentId(userID string, commentID string
 	return &like
 }
 
+// func (repo *LikeRepo) SelectLikesForComment(commentID string) (*[]byte) {
+// /**
+
+// */
+// }
+
 func CreateLikeRepo() (*LikeRepo) {
 	var repo LikeRepo
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})

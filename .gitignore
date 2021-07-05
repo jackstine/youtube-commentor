@@ -8,9 +8,9 @@ info.txt
 
 package-lock.json
 server/go.sum
-server/server
 server/todo
 test.db
 server/static/*
 youtube-commentor
-
+server-old
+server/examples/*

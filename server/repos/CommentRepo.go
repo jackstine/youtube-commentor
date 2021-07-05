@@ -37,6 +37,10 @@ func (repo *commentRepo) SelectByComment(commentID string) (*[]models.Comment) {
 	return &comments
 }
 
+func (repo *commentRepo) UpdateComment(comment *models.Comment) {
+	repo.db.Model(&models.Comment{}).Where("id = ?", comment.ID).Update("comment", comment.Comment)
+}
+
 func CreateCommentRepo() (*commentRepo) {
 	var repo commentRepo
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
