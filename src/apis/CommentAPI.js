@@ -1,4 +1,24 @@
 import WebAPI from "./WebAPI";
+import util from '../util'
+let cc = function (user, comment) {
+  return {
+    comment: {
+      user, comment,
+      time_stamp: new Date().getTime(),
+      id: util.makeid(12),
+      likes: 13,
+      dislikes: 3,
+      user_like: 0
+    },
+    replies: []
+  }
+}
+
+let DEFAULT_COMMENTS = [
+  cc('james', 'hello'),
+  cc('sarah', 'I can comment'),
+  cc('jim', 'we can comment too')
+]
 
 let endpoint = process.env.ENDPOINT
 
@@ -9,7 +29,9 @@ class CommentAPI extends WebAPI {
 
   transformComment(comments) {
     if (!comments) {
-      return []
+      // TODO return [] in the future...
+      console.log('RETURN COMMENTS')
+      return DEFAULT_COMMENTS
     }
     if (!Array.isArray(comments)) {
       comments = [comments]
@@ -42,6 +64,9 @@ class CommentAPI extends WebAPI {
   getCommentsForVideo (video_id) {
     return this.__get('comment/video', {video: video_id}).then(comments => {
       return this.transformComment(comments)
+    }).catch(ex => {
+      console.error(ex)
+      return this.transformComment(null)
     })
   }
 
