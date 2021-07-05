@@ -15,7 +15,6 @@
         time_stamp: new Date().getTime(),
         user: 'byte_of_code',
         comment,
-        id: makeid(10),
         likes: 0,
         dislikes: 0,
         user_like: 0

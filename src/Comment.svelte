@@ -1,7 +1,6 @@
 <script>
   import NewComment from "./NewComment.svelte";
-  // import {createEventDispatcher} from 'svelte'
-  // const dispatch = createEventDispatcher();
+  import CommentAPI from './apis/CommentAPI'
 
   let show_new_comment_section = false
   let show_reply_comments = false
@@ -54,13 +53,13 @@
 
   const on_new_reply= function (e) {
     let reply = e.detail
-    console.log(reply)
-    // TODO create POST API for replies
-    console.log('THIS IS THE ON REPLY')
-    // reply.from_comment = comment.id
-    comment_obj.replies = [reply ,...comment_obj.replies]
-    show_reply_comments = true
-    show_new_comment_section = false
+    reply.comment.parent = comment.id
+    CommentAPI.createComment(reply.comment).then(comment => {
+      console.log(comment)
+      comment_obj.replies = [comment,...comment_obj.replies]
+      show_reply_comments = true
+      show_new_comment_section = false
+    })
   }
 </script>
 

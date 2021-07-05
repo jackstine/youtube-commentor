@@ -14,10 +14,13 @@
 
   const handle_new_comment = function (e) {
     let new_comment = e.detail
-    // TODO POST to API
-    comments = [new_comment, ...comments]
-//      topComment.before(generateCommentHTML(commentObj))
-    console.log(comments)
+    CommentAPI.createComment(new_comment.comment).then(resp => {
+      console.log(resp)
+      comments = [new_comment, ...comments]
+      // TODO to save time make the UUID in the UI
+      // topComment.before(generateCommentHTML(commentObj))
+      console.log(comments)
+    })
   }
 
 </script>
