@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"youtube-commentor/models"
 	"youtube-commentor/repos"
+
+	"github.com/rs/cors"
 )
 
 func generateComment(r *http.Request) (*models.Comment, error) {
@@ -60,16 +62,19 @@ func handleLike(w http.ResponseWriter, r *http.Request) {
 }
 
 func StartServer() {
-	http.HandleFunc("/comment", handleComment)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/comment", handleComment)
 	// GET will reutrn all comments for that video
-	http.HandleFunc("/comment/video", handleCommentForVideo)
+	mux.HandleFunc("/comment/video", handleCommentForVideo)
+	handler := cors.Default().Handler(mux)
 	// Get will reutrn all likes for Comment
 	// Post will create a like
 	// Put will update a like
 	// http.HandleFunc("/like", handleLike)
 
 	fmt.Printf("Starting server at port http://localhost:8080\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8080", handler); err != nil {
 			log.Fatal(err)
 	}
 }
+

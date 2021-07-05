@@ -1,6 +1,7 @@
 <script>
   import Comment from './Comment.svelte'
   import NewComment from './NewComment.svelte'
+  import CommentAPI from './apis/CommentAPI'
   import util from './util'
   let cc = function (user, comment) {
     return {
@@ -15,20 +16,19 @@
       replies: []
     }
   }
-
+  let data = {
+    comments: []
+  }
+  $: comments = data.comments
   let repliesToComment = [
     cc('elliot', 'Hey love the show thanks'),
     cc('Susan', 'Writing random comments for filler'),
     cc('TimTheDrumMan', 'Thanks for the vid, love the content. Keep it up!')
   ]
-  
-  let comments = [
-    cc('james', 'hello'),
-    cc('sarah', 'I can comment'),
-    cc('jim', 'we can comment too')
-  ]
-
-  let topCommentId = comments[0].id
+  CommentAPI.getCommentsForVideo('id of the video').then(resp => {
+    console.log(resp)
+    data.comments = [...resp]
+  })
 
   const handle_new_comment = function (e) {
     let new_comment = e.detail
