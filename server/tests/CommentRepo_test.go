@@ -1,6 +1,7 @@
 package test
 
 import (
+	"fmt"
 	"testing"
 	"youtube-commentor/models"
 	"youtube-commentor/repos"
@@ -75,3 +76,15 @@ func TestUpdateComment(t *testing.T) {
 		t.Error("The comment did not update")
 	}
 }
+
+func TestGetFullCommentsForAVideo(t *testing.T) {
+	repo := repos.CreateCommentRepo()
+	comment := GetComment()
+	repo.CreateComment(&comment)
+	full_comments := repo.GetFullCommentsFromVideo(comment.Video_id, comment.User_id)
+	fmt.Println("ajfklajsdfkljasdkl")
+	for _,fc := range *full_comments {
+		fc.Print()
+	}
+}
+

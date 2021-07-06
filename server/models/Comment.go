@@ -12,9 +12,22 @@ type Comment struct {
 	Parent string `gorm:"index;type:uuid"`
 }
 
+/*
+	the concept of a Full Comment is everything that the front end will need for a comment
+*/
+type FullComment struct {
+	Comment
+	LikesDislikesData
+	LikeData
+}
+
 type CommentLikes struct {
 	Comments []Comment
 	Likes []LikesDislikes
+}
+
+func (fc *FullComment) Print() {
+	fmt.Println(fc.ID, fc.Comment, fc.Likes, fc.Dislikes, fc.Like)
 }
 
 func (comment *Comment) Print() {

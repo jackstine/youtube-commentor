@@ -4,9 +4,12 @@ import (
 	"fmt"
 )
 
+type LikeData struct {
+	Like byte
+}
 
 type Like struct {
-	Like byte
+	LikeData
 	User_id string `gorm:"index"`
 	Comment_id string `gorm:"index;type:uuid"`
 }
