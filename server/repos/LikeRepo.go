@@ -28,6 +28,21 @@ func (repo *LikeRepo) SelectByUserIdAndCommentId(userID string, commentID string
 	return &like
 }
 
+
+func (repo *LikeRepo) DeleteAll_Do_Not_Use() {
+	repo.db.Exec("DELETE FROM likes")
+}
+
+// we do not need this query anymore 
+// DEPRECATED
+// func (repo *LikeRepo) GetLikesForComment(commentIDs []string) (*[]models.LikesDislikes) {
+// 	var likesDislikes []models.LikesDislikes
+// 	likes:= repo.db.Model(&models.Like{}).Select("COUNT(like)").Where("like = 1 AND comment_id IN ?", commentIDs)
+// 	dislikes:= repo.db.Model(&models.Like{}).Select("COUNT(like)").Where("like = 2")
+// 	repo.db.Table("(?) as likes, (?) as dislikes", likes, dislikes).Find(&likesDislikes)
+// 	return &likesDislikes
+// }
+
 // func (repo *LikeRepo) SelectLikesForComment(commentID string) (*[]byte) {
 // /**
 
@@ -42,6 +57,9 @@ func CreateLikeRepo() (*LikeRepo) {
     panic("failed to connect database")
   }
 	db.AutoMigrate(&models.Like{})
+	// stmt := &gorm.Statement{DB: db}
+	// stmt.Parse(&models.Like{})
+	// fmt.Println(stmt.Schema.Table)
 	return &repo
 }
 

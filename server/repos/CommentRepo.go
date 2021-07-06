@@ -41,6 +41,10 @@ func (repo *commentRepo) UpdateComment(comment *models.Comment) {
 	repo.db.Model(&models.Comment{}).Where("id = ?", comment.ID).Update("comment", comment.Comment)
 }
 
+func (repo *commentRepo) DeleteAll_Dont_Use() {
+	repo.db.Exec("DELETE FROM comments")
+}
+
 func CreateCommentRepo() (*commentRepo) {
 	var repo commentRepo
 	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})

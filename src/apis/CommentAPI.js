@@ -42,19 +42,31 @@ class CommentAPI extends WebAPI {
       console.log('RETURN COMMENTS')
       return DEFAULT_COMMENTS
     }
-    if (!Array.isArray(comments)) {
-      comments = [comments]
+    // should always be an array
+    // if (!Array.isArray(comments)) {
+    //   comments = {comments: [comments], likes: []}
+    // }
+    const com_dict = comments.Comments.reduce((obj, el) => {
+      obj[el.ID] = el
+      return obj
+    }, {})
+    for (let l of comments.Likes) {
+      const c = com_dict[l.Comment_id]
+      c.dislikes = l.Dislikes
+      c.likes = l.Likes
+      // TODO need to get the user_likes from the APIs
+      c.user_like = 0
     }
     // TODO need likes, dislikes, and user_like
     // TODO need to add in user to the API request
     // who is requesting the comments
-    for (let c of comments) {
+    for (let c of comments.Comments) {
       for (let t of Object.keys(this.trans)) {
         c[this.trans[t]] = c[t]
         delete c[t]
       }
     }
-    return comments.map(comment => {
+    return comments.Comments.map(comment => {
       return {
         comment,
         replies: []
@@ -102,7 +114,7 @@ class CommentAPI extends WebAPI {
   createComment(comment) {
     comment = this.transformCommentForAPI(comment)[0]
     return this.__post('comment', comment).then(reply => {
-      return this.transformCommentForChrome(reply)[0]
+      return this.transformCommentForChrome({Comments: [reply], Likes: [{Comment_id: reply.ID, Likes: 0, Dislikes: 0}]})[0]
     })
   }
 

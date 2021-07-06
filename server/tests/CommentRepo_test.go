@@ -6,7 +6,7 @@ import (
 	"youtube-commentor/repos"
 )
 
-func getComment() (models.Comment) {
+func GetComment() (models.Comment) {
 	user_id := "byte_of_code"
 	time_stamp := uint32(100)
 	string_comment := "This is the comment"
@@ -37,7 +37,7 @@ func assertComment(t *testing.T, sc models.Comment, comment models.Comment) {
 }
 
 func TestSelectByVideo(t *testing.T) {
-	comment := getComment()
+	comment := GetComment()
 	commentRepo := repos.CreateCommentRepo()
 	commentRepo.CreateComment(&comment)
 	comment.User_id = "Cloud_Hopper"
@@ -54,10 +54,24 @@ func TestSelectByVideo(t *testing.T) {
 }
 
 func TestSelectOne(t *testing.T) {
-	comment := getComment()
+	comment := GetComment()
 	commentRepo := repos.CreateCommentRepo()
 	first_uuid := commentRepo.CreateComment(&comment)
 	var sc *models.Comment // selectedComment
 	sc = commentRepo.SelectOne(first_uuid)
 	assertComment(t, *sc, comment)
+}
+
+
+func TestUpdateComment(t *testing.T) {
+	comment := GetComment()
+	repo := repos.CreateCommentRepo()
+	repo.CreateComment(&comment)
+	updatedComment := "UPDATE UPDATE UPDATE UPDATE"
+	comment.Comment = updatedComment
+	repo.UpdateComment(&comment)
+	sc := repo.SelectOne(comment.ID)
+	if (sc.Comment != updatedComment) {
+		t.Error("The comment did not update")
+	}
 }

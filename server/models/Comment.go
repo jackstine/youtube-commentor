@@ -1,5 +1,8 @@
 package models
 
+import "fmt"
+
+
 type Comment struct {
 	ID string `gorm:"type:uuid;primaryKey"`
 	Time_stamp uint32
@@ -9,5 +12,12 @@ type Comment struct {
 	Parent string `gorm:"index;type:uuid"`
 }
 
+type CommentLikes struct {
+	Comments []Comment
+	Likes []LikesDislikes
+}
 
+func (comment *Comment) Print() {
+	fmt.Println(comment.ID, comment.User_id)
+}
 

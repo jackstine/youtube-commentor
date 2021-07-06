@@ -1,6 +1,7 @@
 package main
 
 import (
+	"youtube-commentor/logic"
 	"youtube-commentor/models"
 	"youtube-commentor/repos"
 	"youtube-commentor/server"
@@ -8,7 +9,9 @@ import (
 
 
 func main() {
-	commentRepo := repos.CreateCommentRepo()
+	repos.CreateCommentRepo().DeleteAll_Dont_Use()
+	repos.CreateLikeRepo().DeleteAll_Do_Not_Use()
+	repos.CreateLikesDislikesRepo().DeleteAll_Never_Use()
 	user_id := "byte_of_code"
 	time_stamp := uint32(100)
 	string_comment := "This is the comment"
@@ -19,11 +22,15 @@ func main() {
 		Comment: string_comment,
 		Video_id: video_id,
 		Parent: ""};
-	commentRepo.CreateComment(&comment)
+	logic.CreateANewComment(&comment)
 	comment.User_id = "Cloud_Hopper"
-	commentRepo.CreateComment(&comment)
+	logic.CreateANewComment(&comment)
 	comment.User_id = "RyanKHawkins"
-	commentRepo.CreateComment(&comment)
+	logic.CreateANewComment(&comment)
+	comment.User_id = "Qorzzz"
+	logic.CreateANewComment(&comment)
+	comment.User_id = "Major_Lift"
+	logic.CreateANewComment(&comment)
 	server.StartServer()
 }
 

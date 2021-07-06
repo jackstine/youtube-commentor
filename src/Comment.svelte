@@ -37,6 +37,7 @@
   }
 
   const on_like = function () {
+    debugger
     if (user_like === LIKES.DISLIKE) {
       comment_obj.comment.dislikes--
     }
