@@ -22,7 +22,12 @@
 
   const on_show_reply_comments = function (comment_id) {
     show_reply_comments = !show_reply_comments
-    // TODO call api to get the replies
+    if (comment_obj.replies.length === 0) {
+      CommentAPI.getReplies(comment_id).then(comments => {
+        debugger
+        comment_obj.replies = [...comment_obj.replies, ...comments]
+      })
+    }
   }
 
   const on_dislike = function () {
@@ -92,6 +97,7 @@
   <section class="comments">
     <div class="toggle-btn" on:click={() => on_show_reply_comments(comment.id)} style="font-size: 1rem" >
       View replies (number)
+      <!-- TODO Need to query for CommentsOfAComment -->
     </div>
     <div>
       {#if show_new_comment_section}

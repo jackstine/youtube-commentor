@@ -12,5 +12,6 @@ type LikesDislikesData struct {
 
 type LikesDislikes struct {
 	LikesDislikesData
-	Comment_id string `gorm:"type:uuid;primaryKey"`
+	CommentID string `gorm:"type:uuid;primaryKey"`
 }
+

@@ -1,7 +1,6 @@
 package test
 
 import (
-	"fmt"
 	"testing"
 	"youtube-commentor/models"
 	"youtube-commentor/repos"
@@ -82,9 +81,34 @@ func TestGetFullCommentsForAVideo(t *testing.T) {
 	comment := GetComment()
 	repo.CreateComment(&comment)
 	full_comments := repo.GetFullCommentsFromVideo(comment.Video_id, comment.User_id)
-	fmt.Println("ajfklajsdfkljasdkl")
 	for _,fc := range *full_comments {
 		fc.Print()
+	}
+}
+
+func TestGetFullCommentsFromComment(t *testing.T) {
+	repo := repos.CreateCommentRepo()
+	comment := GetComment()
+	repo.CreateComment(&comment)
+	id_1 := comment.ID
+	comment.Parent = id_1
+	repo.CreateComment(&comment)
+	id_2 := comment.ID
+	comment.Parent = id_1
+	repo.CreateComment(&comment)
+	id_3 := comment.ID
+	full_comments := repo.GetFullCommentsFromComment(id_1, comment.User_id)
+	ids := []string{id_2, id_3}
+	for _,el := range *full_comments {
+		pass := false
+		for _,i := range ids {
+			if (el.ID == i) {
+				pass = true
+			}
+		}
+		if (!pass) {
+			t.Error("There was no matching id for the selected comments")
+		}
 	}
 }
 

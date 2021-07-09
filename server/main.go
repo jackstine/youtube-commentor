@@ -33,4 +33,3 @@ func main() {
 	logic.CreateANewComment(&comment)
 	server.StartServer()
 }
-

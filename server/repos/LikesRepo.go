@@ -32,19 +32,16 @@ func (repo *LikesRepo) GetLikesForComments(comment_ids []string) (*[]models.Like
 	return &likes
 }
 
-/*
-This method is used only to add likes and dislikes
-*/
-func (repo *LikesRepo) AddLikes(likesToAdd []models.LikesDislikes) {
-	for _,el := range likesToAdd {
-		repo.db.Model(&el).Update("likes", gorm.Expr("likes + ?", el.Likes)).Update("dislikes", gorm.Expr("dislikes + ?", el.Dislikes))
-	}
+
+// TODO need to add 1 and subtract the other...
+func (repo *LikesRepo) AddLike(commentID string, like int, dislike int) {
+	repo.db.Model(&models.LikesDislikes{}).Where("comment_id = ?", commentID).Update("likes", gorm.Expr("likes + ?", like)).Update("dislikes", gorm.Expr("dislikes + ?", dislike))
 }
 
 
 func (repo *LikesRepo) CreateNewLikes(comment_id string) {
 	var likes models.LikesDislikes
-	likes.Comment_id = comment_id
+	likes.CommentID = comment_id
 	likes.Dislikes = 0
 	likes.Likes = 0
 	repo.db.Create(likes)

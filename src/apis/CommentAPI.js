@@ -32,7 +32,10 @@ class CommentAPI extends WebAPI {
       "User_id": "user",
       "ID": "id",
       "Parent": "parent",
-      "Video_id": "video_id"
+      "Video_id": "video_id",
+      "Likes": "likes",
+      "Dislikes": "dislikes",
+      "Like": "user_like"
     }
   }
 
@@ -46,27 +49,16 @@ class CommentAPI extends WebAPI {
     // if (!Array.isArray(comments)) {
     //   comments = {comments: [comments], likes: []}
     // }
-    const com_dict = comments.Comments.reduce((obj, el) => {
-      obj[el.ID] = el
-      return obj
-    }, {})
-    for (let l of comments.Likes) {
-      const c = com_dict[l.Comment_id]
-      c.dislikes = l.Dislikes
-      c.likes = l.Likes
-      // TODO need to get the user_likes from the APIs
-      c.user_like = 0
-    }
     // TODO need likes, dislikes, and user_like
     // TODO need to add in user to the API request
     // who is requesting the comments
-    for (let c of comments.Comments) {
+    for (let c of comments) {
       for (let t of Object.keys(this.trans)) {
         c[this.trans[t]] = c[t]
         delete c[t]
       }
     }
-    return comments.Comments.map(comment => {
+    return comments.map(comment => {
       return {
         comment,
         replies: []
@@ -98,8 +90,10 @@ class CommentAPI extends WebAPI {
     return new_coments
   }
 
-  getCommentsForVideo (video_id) {
-    return this.__get('comment/video', {video: video_id}).then(comments => {
+  getCommentsForVideo (video_id, user_id) {
+    // TODO add in the real user
+    user_id = "byte_of_code"
+    return this.__get('comment/video', {video: video_id, user: user_id}).then(comments => {
       return this.transformCommentForChrome(comments)
     }).catch(ex => {
       console.error(ex)
@@ -107,8 +101,11 @@ class CommentAPI extends WebAPI {
     })
   }
 
-  getReplies(comment_id) {
-    return this.__get('comment', {comment: comment_id})
+  getReplies(comment_id, user_id) {
+    user_id = 'byte_of_code'
+    return this.__get('comment', {comment: comment_id, user: user_id}).then(comments => {
+      return this.transformCommentForChrome(comments)
+    })
   }
 
   createComment(comment) {
@@ -122,6 +119,10 @@ class CommentAPI extends WebAPI {
     return this.__put('comment', {comment: comment}).then(comment => {
       return this.transformCommentForChrome(comment)
     })
+  }
+
+  addLikes(likes) {
+    return this.__put('')
   }
 }
 

@@ -3,7 +3,6 @@ package test
 import (
 	"testing"
 	"youtube-commentor/logic"
-	"youtube-commentor/models"
 	"youtube-commentor/repos"
 )
 
@@ -24,23 +23,24 @@ func TestAddLikes(t *testing.T) {
 	comment := GetComment()
 	logic.CreateANewComment(&comment)
 	likes := repo.GetLikesForComments([]string{comment.ID})
-	l := (*likes)[0]
-	l.Likes = 5
-	l.Dislikes = 3
-	repo.AddLikes([]models.LikesDislikes{l})
+	ll := (*likes)[0]
+	var like, dislike int
+	comment_id := ll.CommentID
+	like = 5
+	dislike = 3
+	repo.AddLike(comment_id, like, dislike)
 	likes = repo.GetLikesForComments([]string{comment.ID})
-	l = (*likes)[0]
-	if (l.Likes != 5 && l.Dislikes != 3) {
+	ll = (*likes)[0]
+	if (ll.Likes != 5 && ll.Dislikes != 3) {
 		t.Error("there was an issue with adding likes and dislikes")
 	}
-	var adding_likes models.LikesDislikes
-	adding_likes.Dislikes = 4
-	adding_likes.Likes = 7
-	adding_likes.Comment_id = comment.ID
-	repo.AddLikes([]models.LikesDislikes{adding_likes})
+	dislike = 4
+	like = 7
+	comment_id = comment.ID
+	repo.AddLike(comment_id, like, dislike)
 	likes = repo.GetLikesForComments([]string{comment.ID})
-	l = (*likes)[0]
-	if (l.Likes != 12 && l.Dislikes != 7) {
+	ll = (*likes)[0]
+	if (ll.Likes != 12 && ll.Dislikes != 7) {
 		t.Error("there was an issue with adding likes and dislikes")
 	}
 }

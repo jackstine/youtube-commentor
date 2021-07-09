@@ -33,8 +33,9 @@ func handleComment(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// GET will return all comments (replies) with the comment id
 		commentID := r.URL.Query()["comment"]
-		comments := repos.CreateCommentRepo().SelectByComment(commentID[0])
-		Send(w, comments)
+		userID := r.URL.Query()["user"]
+		fullComments := repos.CreateCommentRepo().GetFullCommentsFromComment(commentID[0], userID[0])
+		Send(w, fullComments)
 	} else if r.Method == "POST" {
 		// POST will post a new comment
 		var comment models.Comment
@@ -63,19 +64,31 @@ func handleCommentForVideo(w http.ResponseWriter, r *http.Request) {
 	if r.Method == "GET" {
 		// GET will return all comments (replies) with the comment id
 		videoID := r.URL.Query()["video"]
-		commentLikes := logic.GetCommentsFromVideo(videoID[0])
-		Send(w, commentLikes)
+		userID := r.URL.Query()["user"]
+		fullComments := repos.CreateCommentRepo().GetFullCommentsFromVideo(videoID[0], userID[0])
+		Send(w, fullComments)
 	}
 }
 
+// this is for updating the user like
 func handleLike(w http.ResponseWriter, r *http.Request) {
-	var like models.UpdateLike
-	UnmarshalBody(r, &like)
-	if (like.Update) {
-		repos.CreateLikeRepo().UpdateLike(&like.Like)
-	} else {
-		repos.CreateLikeRepo().CreateLike(&like.Like)
+	var updateLike models.UpdateLike
+	UnmarshalBody(r, &updateLike)
+	var like, dislike int
+	commentID := updateLike.Like.Comment_id
+	if (updateLike.Like.Like == 2) {
+		dislike = 1
+		like = -1
+	} else if (updateLike.Like.Like == 1) {
+		like = 1
+		dislike = -1
 	}
+	if (updateLike.Update) {
+		repos.CreateLikeRepo().UpdateLike(&updateLike.Like)
+	} else {
+		repos.CreateLikeRepo().CreateLike(&updateLike.Like)
+	}
+	repos.CreateLikesDislikesRepo().AddLike(commentID, like, dislike)
 	Send(w, like)
 }
 
