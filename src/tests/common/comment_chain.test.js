@@ -1,0 +1,75 @@
+const comment_chain = require('../../common/comment_chain')
+const chai = require('chai')
+chai.should()
+
+const assert_time = function (comment, time) {
+  const chain = comment_chain.buildChain(comment)
+  chain.length.should.be.equal(3)
+  chain[0].text.should.be.equal("")
+  chain[1].text.should.be.equal(comment)
+  chain[1].seconds.should.be.equal(time)
+  chain[2].text.should.be.equal("")
+}
+
+describe('comment_chain', function () {
+  describe("build_chain", function () {
+    it("it can parse the information correctly", function (done) {
+      let comment = "This is a regular comment"
+      let chain = comment_chain.buildChain(comment)
+      chain.length.should.be.equal(1)
+      chain[0].text.should.be.equal(comment)
+      assert_time("0:02",2)
+      assert_time("0:4", 4)
+      assert_time("00:14", 14)
+      assert_time("1:14", 74)
+      assert_time("01:42", 102)
+      assert_time("01:2", 62)
+      assert_time("11:2", 662)
+      assert_time("11:12", 672)
+      assert_time("0:11:12", 672)
+      assert_time("0:0:5", 5)
+      assert_time("0:0:15", 15)
+      assert_time("0:5:0", 300)
+      assert_time("0:5:5", 305)
+      assert_time("0:5:35", 335)
+      assert_time("0:15:0", 900)
+      assert_time("0:15:4", 904)
+      assert_time("0:15:04", 904)
+      assert_time("0:15:54", 954)
+      assert_time("1:0:0", 3600)
+      assert_time("1:0:8", 3608)
+      assert_time("1:0:18", 3618)
+      assert_time("1:1:0", 3660)
+      assert_time("1:1:1", 3661)
+      assert_time("1:1:11", 3671)
+      assert_time("1:11:11", 4271)
+      assert_time("21:11:11", 76271)
+      done()
+    })
+    it("it is able to handle various times", function (done) {
+      let phrase = "This is a regular comment"
+      let time_word = "0:02"
+      let comment = `${time_word}${phrase}`
+      let chain = comment_chain.buildChain(comment)
+      chain.length.should.be.equal(3)
+      chain[0].text.should.be.equal("")
+      chain[1].text.should.be.equal(time_word)
+      chain[2].text.should.be.equal(phrase)
+      comment = `${phrase}${time_word}`
+      chain = comment_chain.buildChain(comment)
+      chain.length.should.be.equal(3)
+      chain[0].text.should.be.equal(phrase)
+      chain[1].text.should.be.equal(time_word)
+      chain[2].text.should.be.equal("")
+      comment = `${phrase}${time_word}${time_word}`
+      chain = comment_chain.buildChain(comment)
+      chain.length.should.be.equal(5)
+      chain[0].text.should.be.equal(phrase)
+      chain[1].text.should.be.equal(time_word)
+      chain[2].text.should.be.equal("")
+      chain[3].text.should.be.equal(time_word)
+      chain[4].text.should.be.equal("")
+      done()
+    })
+  })
+})

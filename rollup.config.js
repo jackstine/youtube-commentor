@@ -6,9 +6,19 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
 
-const production = !process.env.ROLLUP_WATCH;
+const production = process.env.ROLLUP_WATCH === 'false';
 
-const environment = replace({
+const prod = replace({
+  // can replace constants as well
+  preventAssignment: true,
+  process: JSON.stringify({
+    env: {
+      ENDPOINT: "https://api.ytcommenter.byteofcode.io/",
+    }
+  }),
+})
+
+const dev = replace({
   // can replace constants as well
   preventAssignment: true,
   process: JSON.stringify({
@@ -18,40 +28,44 @@ const environment = replace({
   }),
 })
 
-const plugins = [
-  svelte({
-    compilerOptions: {
-      // enable run-time checks when not in production
-      dev: !production
-    }
-  }),
-  // we'll extract any component CSS out into
-  // a separate file - better for performance
-  css({ output: 'bundle.css' }),
-  environment,
-  // If you have external dependencies installed from
-  // npm, you'll most likely need these plugins. In
-  // some cases you'll need additional configuration -
-  // consult the documentation for details:
-  // https://github.com/rollup/plugins/tree/master/packages/commonjs
-  resolve({
-    browser: true,
-    dedupe: ['svelte']
-  }),
-  commonjs(),
+const environment = production ? prod : dev
 
-  // In dev mode, call `npm run start` once
-  // the bundle has been generated
-  !production && serve(),
+const plugins = function (cssFile) {
+  return [
+    svelte({
+      compilerOptions: {
+        // enable run-time checks when not in production
+        dev: !production
+      }
+    }),
+    // we'll extract any component CSS out into
+    // a separate file - better for performance
+    css({ output: cssFile }),
+    environment,
+    // If you have external dependencies installed from
+    // npm, you'll most likely need these plugins. In
+    // some cases you'll need additional configuration -
+    // consult the documentation for details:
+    // https://github.com/rollup/plugins/tree/master/packages/commonjs
+    resolve({
+      browser: true,
+      dedupe: ['svelte']
+    }),
+    commonjs(),
 
-  // Watch the `public` directory and refresh the
-  // browser on changes when not in production
-  !production && livereload('public'),
+    // In dev mode, call `npm run start` once
+    // the bundle has been generated
+    !production && serve(),
 
-  // If we're building for production (npm run build
-  // instead of npm run dev), minify
-  production && terser()
-]
+    // Watch the `public` directory and refresh the
+    // browser on changes when not in production
+    !production && livereload('public'),
+
+    // If we're building for production (npm run build
+    // instead of npm run dev), minify
+    production && terser()
+  ]
+}
 
 
 function serve() {
@@ -75,50 +89,32 @@ function serve() {
 	};
 }
 
+const o = {
+  sourcemap: !production,
+  compact: production,
+  format: 'iife'
+}
+
 export default [{
-    input: 'src/main.js',
-    output: {
-      sourcemap: true,
-      format: 'iife',
-      name: 'app',
-      file: 'public/build/bundle.js'
-    },
-    plugins,
-    watch: {
-      clearScreen: false
-    }
-  }, {
-    input: 'src/youtube.js',
-    output: {
-      sourcemap: true,
-      format: 'iife',
-      name: 'app',
-      file: 'public/build/youtube.js'
-    },
-    plugins,
-    watch: {
-      clearScreen: false
-    }
-  }, {
-    input: "src/background.js",
-    output: {
-      sourcemap: true,
-      format: "iife",
-      file: "public/build/background.js",
-    },
-    plugins: [resolve(), commonjs()],
-    watch: {
-      clearScreen: false,
-    },
-  }, {
     input: 'src/injection.js',
     output: {
-      sourcemap: true,
-      format: 'iife',
+      ...o,
       name: 'app',
-      file: 'public/build/injection.js'
+      file: 'public/build/injection/injection.js'
     },
-    plugins,
+    plugins: plugins("injection.css"),
+    watch: {
+      clearScreen: false
+    }
+  },
+  {
+    input: 'src/popup.js',
+    output: {
+      ...o,
+      name: 'app',
+      file: 'public/build/popup/popup.js'
+    },
+    plugins: plugins('popup.css'),
     watch: {
       clearScreen: false
     }

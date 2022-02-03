@@ -1,0 +1,30 @@
+https://developer.chrome.com/docs/extensions/mv3/content_scripts/
+https://developer.chrome.com/docs/extensions/mv3/content_scripts/
+
+alarms
+https://developer.chrome.com/docs/extensions/reference/alarms/#type-Alarm
+
+scripting CSS injection
+https://developer.chrome.com/docs/extensions/reference/scripting/#type-CSSInjection
+
+
+
+when application starts, call to get the current userProfile information
+if we cannot get current profile information, then we need to do something
+
+
+DEPLOYMENT CHECK LIST
+
+1. update the manifest as needed
+2. update the server, and get rid of cache
+3. get rid of database additions
+4. need to get those photos ready for the application as well.
+5. add a support page to the website
+6. add a Guidelines Page
+
+
+NEXT DEPLOYMENT
+1. need to transfer likes to the database
+2. need to handle anything else as well.
+3. might want to add a section on the chrome extention that states the next time the servers will be
+7. get a google analytics ID

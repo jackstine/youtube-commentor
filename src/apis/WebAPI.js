@@ -1,3 +1,7 @@
+import { debug } from "svelte/internal";
+
+const webAPIResources = {}
+
 class WebAPI {
   constructor({ endpoint }) {
     this.endpoint = endpoint;
@@ -43,6 +47,8 @@ class WebAPI {
     for (let head of  this.addedHeaders) {
       headers[head.key] = head.value
     }
+    const authTokenData = await webAPIResources.conn.getAuthToken()
+    headers["Authorization"] = `Bearer ${authTokenData.authToken}`
     let requestOptions = {
       method: options.method, // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
@@ -70,4 +76,32 @@ class WebAPI {
   }
 }
 
+const registerConnection = function (conn) {
+  webAPIResources.conn = conn
+}
+
+const canGetAuthToken = async function () {
+  if (webAPIResources.conn) {
+    const authToken = await webAPIResources.conn.hasAuthToken()
+    if (authToken?.authToken) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
+const showPopupLogin = async function () {
+  if (webAPIResources.conn) {
+    const authToken = await webAPIResources.conn.getAuthToken()
+    if (authToken?.authToken) {
+      return true
+    } else {
+      return false
+    }
+  }
+}
+
 export default WebAPI;
+
+export {registerConnection, canGetAuthToken, showPopupLogin};
